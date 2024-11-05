@@ -1,28 +1,39 @@
-# Import necessary libraries
 import streamlit as st
-import seaborn as sns 
-import plotly.express as px
-import pandas as pd
 
-# --- Title and Introduction ---
-st.title("Plotly and Streamlit Interactive Visualizations")
+# Initialize a list to store flashcards
+flashcards = []
 
-# Author information
-st.markdown("<h5 style='color: teal;'>Created by:</h6>", unsafe_allow_html=True)
-st.markdown("<p style='color: white;'>1. USN _ FULLNAME </p>", unsafe_allow_html=True)
+def add_flashcard():
+    question = st.text_input("Enter your question:")
+    answer = st.text_input("Enter your answer:")
+    if st.button("Add Flashcard"):
+        flashcards.append({"question": question, "answer": answer})
+        st.success("Flashcard added successfully!")
 
+def study_flashcards():
+    if not flashcards:
+        st.warning("No flashcards found. Please add some first.")
+        return
 
-tips = sns.load_dataset('tips')  # Loading the dataset
-print(tips.head())  # This will show the first 5 rows of the tips dataset
+    import random
+    random.shuffle(flashcards)
 
-# --- Task 2: Bar Chart ---
-st.subheader("Task 2: Bar Chart")
-#Bar Chart: Average Tip by Day (With Color)
-fig2 = px.bar(
-    tips, x='day', y='tip', color='day',
-    title='Average Tip by Day',
-    labels={'tip': 'Average Tip ($)', 'day': 'Day of the Week'},
-    template='plotly_white',  # Clean white background
-)
-fig2.show()
-st.plotly_chart(fig2)
+    for card in flashcards:
+        st.write("**Question:**")
+        st.write(card["question"])
+        if st.button("Show Answer"):
+            st.write("**Answer:**")
+            st.write(card["answer"])
+
+def main():
+    st.title("Flashcard App")
+    st.sidebar.title("Options")
+    choice = st.sidebar.selectbox("Choose an action", ["Add Flashcard", "Study Flashcards"])
+
+    if choice == "Add Flashcard":
+        add_flashcard()
+    elif choice == "Study Flashcards":
+        study_flashcards()
+
+if __name__ == "__main__":
+    main()
